@@ -2,20 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Carrera;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CarreraTableSeeder extends Seeder
+class CarreraSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('carrera')->insert([
+        $carrera = Carrera::create([
             'sede' => 'Uneg Villa Asia',
-            'carrera' => 'Ing. Informatica',
+            'nombre' => 'Ing. Informatica',
         ]);
     }
 }

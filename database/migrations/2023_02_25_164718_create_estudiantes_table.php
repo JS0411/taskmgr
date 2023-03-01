@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('estudiantes', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->string('apellido');
+            $table->string('cedula');
+            $table->string('email')->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->integer('materias_cursadas');
             $table->integer('materias_aprobadas');

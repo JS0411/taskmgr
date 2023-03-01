@@ -10,10 +10,11 @@ class Actividad extends Model
     use HasFactory;
     protected $fillable = [
         'fecha_entrega',
-        'description',
+        'descripcion',
         'modalidad',
         'puntuacionMaxima',
         'asignatura_id',
+        'estado',
     ];
 
     public function asignatura()
@@ -23,6 +24,6 @@ class Actividad extends Model
 
     public function estudiantes()
     {
-        return $this->belongsToMany(Estudiante::class);
+        return $this->belongsToMany(Estudiante::class)->withPivot('puntuacion', 'entregado');
     }
 }

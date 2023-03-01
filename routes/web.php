@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AsignaturaController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/user', [UserController::class, 'index'])->name('user.index');
+Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
+Route::get('/asignatura/create', [AsignaturaController::class, 'create'])->name('asignatura.create');
+Route::post('/asignatura', [AsignaturaController::class, 'store'])->name('asignatura.store');
+
 
 Route::middleware([
     'auth:sanctum',
@@ -25,4 +30,5 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
 });

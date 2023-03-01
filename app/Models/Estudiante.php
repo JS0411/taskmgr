@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Estudiante extends User
 {
@@ -12,11 +13,9 @@ class Estudiante extends User
     protected $fillable = [
         'name',
         'email',
-        'password',
         'nombre',
         'apellido',
         'cedula',
-        'tipo',
         'materias_cursadas',
         'materias_aprobadas',
         'materias_reprobadas',
@@ -31,16 +30,11 @@ class Estudiante extends User
 
     public function actividades()
     {
-        return $this->hasMany(Actividad::class);
+        return $this->belongsToMany(Actividad::class)->withPivot('puntuacion', 'entregado');
     }
     
     public function asignaturas()
     {
-        return $this->hasMany(Asignatura::class);
+        return $this->belongsToMany(Asignatura::class)->withPivot('puntuacion', 'resultado');
     }
 }
-$table->foreignId('id_estudiante')->constrained('users')->onDelete('cascade');
-            $table->integer('materias_cursadas');
-            $table->integer('materias_aprobadas');
-            $table->integer('materias_reprobadas');
-            $table->float('promedio', 3, 2);

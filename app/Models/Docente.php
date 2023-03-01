@@ -13,11 +13,9 @@ class Docente extends User
     protected $fillable = [
         'name',
         'email',
-        'password',
         'nombre',
         'apellido',
         'cedula',
-        'tipo',
         'user_id',
     ];
 

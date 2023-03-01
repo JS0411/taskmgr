@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->dateTime('fecha_entrega');
-            $table->string('description');
+            $table->string('descripcion');
             $table->string('modalidad');
             $table->integer('puntuacionMaxima');
             $table->foreignId('asignatura_id')->constrained('asignaturas')->onDelete('cascade');
+            $table->string('estado');
         });
     }
 

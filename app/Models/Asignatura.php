@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Asignatura extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'nombre',
         'carrera_id',
         'docente_id',
         'descripcion',
+        'estado',
     ];
 
     public function docente() 
@@ -32,6 +35,6 @@ class Asignatura extends Model
 
     public function estudiantes()
     {
-        return $this->belongsToMany(Estudiante::class);
+        return $this->belongsToMany(Estudiante::class)->withPivot('puntuacion', 'resultado');
     }
 }

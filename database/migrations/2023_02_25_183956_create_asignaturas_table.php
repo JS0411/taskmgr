@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('carrera_id')->constrained('carreras')->onDelete('cascade');
+            $table->string('nombre');
             $table->string('descripcion');
+            $table->string('estado');
             $table->foreignId('docente_id')->constrained('docentes')->onDelete('cascade');
         });
     }
