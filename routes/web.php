@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\ActividadController;
+use Illuminate\Support\Facades\URL;
 
 
 /*
@@ -41,3 +42,5 @@ Route::middleware([
     })->name('dashboard');
 
 });
+
+URL::forceScheme('https');
