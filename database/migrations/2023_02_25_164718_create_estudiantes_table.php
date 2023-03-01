@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('cedula');
             $table->string('email')->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('carrera_id')->constrained('carreras')->onDelete('cascade')->default(1);
             $table->integer('materias_cursadas');
             $table->integer('materias_aprobadas');
             $table->integer('materias_reprobadas');

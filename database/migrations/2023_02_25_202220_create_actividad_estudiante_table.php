@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('actividad_id')->constrained('actividads')->onDelete('cascade');
             $table->foreignId('estudiante_id')->constrained('estudiantes')->onDelete('cascade');
-            $table->integer('puntuacion');
-            $table->boolean('entregado');
+            $table->integer('puntuacion')->default(0);
+            $table->boolean('entregado')->default(0); // 1 = Entregado
         });
     }
 

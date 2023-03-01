@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+Carbon::setLocale('es');
 
 class Actividad extends Model
 {
@@ -25,5 +27,10 @@ class Actividad extends Model
     public function estudiantes()
     {
         return $this->belongsToMany(Estudiante::class)->withPivot('puntuacion', 'entregado');
+    }
+
+    public function entrega()
+    {
+        return Carbon::parse($this->fecha_entrega)->diffForHumans(Carbon::Now());
     }
 }

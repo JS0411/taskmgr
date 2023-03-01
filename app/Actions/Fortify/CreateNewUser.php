@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\Docente;
 use App\Models\Estudiante;
 use App\Models\User;
+use App\Models\Carrera;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -51,7 +52,9 @@ class CreateNewUser implements CreatesNewUsers
                 'materias_reprobadas' => 0,
                 'promedio' => 0.00,
                 'user_id' => $usuario->id,
+                'carrera_id' => Carrera::find(1)->id,
             ]);
+            $estudiante->carrera()->associate(Carrera::Find(1));
             $estudiante->save();
         } else if ($input['tipo'] =='docente') {
             $docente = Docente::create([

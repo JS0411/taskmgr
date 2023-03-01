@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('user.index') }}">
                         <x-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
@@ -17,7 +17,7 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link href="{{ route('user.index') }}" :active="request()->routeIs('user.index')">
+                    <x-nav-link href="{{ route('user.show', ['id' => Auth::user()->id]) }}" :active="request()->routeIs('user.show')">
                         {{ __('Carrera') }}
                     </x-nav-link>
                 </div>

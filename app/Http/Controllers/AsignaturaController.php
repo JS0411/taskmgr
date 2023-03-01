@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actividad;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Docente;
 use App\Models\Asignatura;
+use App\Models\Carrera;
+use App\Models\Estudiante;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class AsignaturaController extends Controller
 {
@@ -17,25 +21,37 @@ class AsignaturaController extends Controller
         }
     }
 
-    public function store(array $input)
+    public function store(Request $request)
     {
-        Validator::make($input, [
+        $requestArray = $request->all();
+
+        Validator::make($requestArray, [
             'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['required', 'string', 'max:255'],
             'carrera_id' => ['required', 'integer'],
             'docente_id' => ['required', 'integer'],
         ])->validate();
 
-        $asignatura = Docente::where('user_id', $input['docente'])->get()->Asignatura::create([
-            'nombre' => $input['nombre'],
-            'descripcion' => $input['descripcion'],
-            'carrera_id' => $input['carrera'],
+        $asignatura = Docente::where('user_id', $requestArray['docente_id'])->first()->asignaturas()->create([
+            'nombre' => $requestArray['nombre'],
+            'descripcion' => $requestArray['descripcion'],
+            'carrera_id' => $requestArray['carrera_id'],
             'estado' => 'En Curso',
         ]);
+        $asignatura->carrera()->associate(Carrera::Find($asignatura->carrera_id));
+        $asignatura->save();
 
-        $asignatura->carrera()->attach('carrera_id');
-        
-        return $asignatura->save();
+        $datos = [
+            'id' => $asignatura->id,
+            'nombre' => $asignatura->nombre,
+            'nombre_docente' => $asignatura->docente->nombre,
+            'descripcion' => $asignatura->descripcion,
+            'estado' => $asignatura->estado,
+            'actividades' => $asignatura->actividades,
+            'estudiantes' => $asignatura->estudiantes,
+        ];
+
+        return view('asignatura.show', compact('datos'));
 
     }
     
@@ -45,11 +61,12 @@ class AsignaturaController extends Controller
         $user = Auth::user();
 
         $datos = [
+            'id' => $asignatura->id,
             'nombre' => $asignatura->nombre,
-            'nombre_docente' => $asignatura->docente()->nombre,
+            'nombre_docente' => $asignatura->docente->nombre,
             'descripcion' => $asignatura->descripcion,
             'estado' => $asignatura->estado,
-            'evaluaciones' => $asignatura->evaluaciones,
+            'actividades' => $asignatura->actividades,
             'estudiantes' => $asignatura->estudiantes,
         ];
 
@@ -57,22 +74,61 @@ class AsignaturaController extends Controller
 
     }
 
-    public function edit($id, $input, $mode)
+    public function edit(Request $request, $id)
     {
         $asignatura = Asignatura::find($id);
+        $modo = $request->modo;
         $user = Auth::user();
 
-        $datos = [
-            'nombre' => $asignatura->nombre,
-            'nombre_docente' => $asignatura->docente()->nombre,
-            'descripcion' => $asignatura->descripcion,
-            'estado' => $asignatura->estado,
-            'evaluaciones' => $asignatura->evaluaciones,
-            'estudiantes' => $asignatura->estudiantes,
-        ];
+        if ($user->tipo == 'docente') {
+            $listado_estudiantes = '';
+            if ($modo == "Invitar") {
+                $listado_estudiantes = Estudiante::whereDoesntHave('asignaturas', function ($q) use ($id) {
+                    $q->where('asignatura_id', $id);
+                })->get();
+            } 
+            $datos = [
+                'id' => $asignatura->id,
+                'nombre' => $asignatura->nombre,
+                'nombre_docente' => $asignatura->docente->nombre,
+                'descripcion' => $asignatura->descripcion,
+                'estado' => $asignatura->estado,
+                'actividades' => $asignatura->actividades,
+                'estudiantes' => $asignatura->estudiantes,
+                'listado_estudiantes' => $listado_estudiantes,
+                'modo' => $modo,
+            ];
+            return view('asignatura.edit', compact('datos'));
+    
+        } else {
+            abort(503);
+        }
+    }
 
-        return view('asignatura.show', compact('datos'));
-
+    public function update(Request $request, $id)
+    {
+        $asignatura = Asignatura::find($id);
+        $modo = $request->modo;
+        $user = Auth::user();
+        if ($user->tipo == 'docente') {            
+            if ($modo == "Invitar") {
+                $asignatura->estudiantes()->syncWithoutDetaching($request->estudiantes_invitados);
+            } 
+            $datos = [
+                'id' => $asignatura->id,
+                'nombre' => $asignatura->nombre,
+                'nombre_docente' => $asignatura->docente->nombre,
+                'descripcion' => $asignatura->descripcion,
+                'estado' => $asignatura->estado,
+                'actividades' => $asignatura->actividades,
+                'estudiantes' => $asignatura->estudiantes,
+                'modo' => $modo,
+            ];
+            return view('asignatura.show', compact('datos'));
+    
+        } else {
+            abort(503);
+        }
     }
 
 

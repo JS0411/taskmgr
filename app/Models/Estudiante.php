@@ -21,6 +21,7 @@ class Estudiante extends User
         'materias_reprobadas',
         'promedio',
         'user_id',
+        'carrera_id',
     ];
 
     public function carrera() 
