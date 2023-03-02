@@ -28,7 +28,6 @@
             @endif
             @endif
 
-
             <div class="my-8">
                 <h2 class="text-xl font-bold">Asignaturas en Curso</h2>
                 @if ($datos['asignaturas']->isEmpty())
@@ -40,10 +39,19 @@
                     @endif
                 @else
                     <ul>
-                        @foreach ($datos['asignaturas'] as $asignatura)
+                        @foreach ($datos['actividades'] as $actividad)
                             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4 mt-4">
-                                <a class="" href="asignatura/{{$asignatura->id}}">
-                                    <li style="display: flex; gap: 24px; margin-top: 4px">{{ $asignatura->nombre }}</li>
+                                <a class="" href="/actividad/{{$actividad->id}}">
+                                    <li style="display: flex; gap: 24px; margin-top: 4px">
+                                        {{$actividad->modalidad}},{{$actividad->puntuacionMaxima}}% - {{ $actividad->asignatura->nombre}}
+                                        <div>
+                                            @if ($actividad->estado != 'Pendiente')
+                                                <p style="color: #666666">Finalizada</p>
+                                            @else
+                                                <p style="color: #ff0000">Para entregar en {{$actividad->entrega()}}</p>
+                                            @endif
+                                        </div>
+                                    </li>                                            
                                 </a>
                             </div>
                         @endforeach

@@ -44,6 +44,7 @@ class ActividadController extends Controller
         }
 
         $datos = [
+            'id' => $actividad->id,
             'fecha_entrega' => $actividad->entrega(),
             'descripcion' => $actividad->descripcion,
             'estado' => $actividad->estado,
@@ -52,9 +53,7 @@ class ActividadController extends Controller
             'puntuacion' => -1,
             'estudiantes' => $actividad->estudiantes,
         ];
-
-        dd($actividad);
-
+        
         return view('actividad.show', compact('datos'));
     }
     
