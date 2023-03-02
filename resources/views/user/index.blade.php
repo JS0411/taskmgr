@@ -10,23 +10,30 @@
 
             @if (Auth::user()->tipo == 'estudiante')
             <h2 class="text-xl font-bold">Asignaciones Pendientes</h2>
-            @if ($datos['actividades']->isEmpty())
-                    <p class="my-4">No tienes actividades que entregar para esta semana.</p>
-            @else
-                <ul>
-                    @foreach ($datos['actividades'] as $actividad)
-                            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4 mt-4">
-                                <a class="" href="actividad/{{$actividad->id}}">
-                                    <li style="display: flex; gap: 24px; margin-top: 4px">
-                                        {{ $actividad->nombre }}
-                                        {{ $actividad->fecha_entrega}}
-                                    </li>                                            
-                                </a>
-                            </div>
-                    @endforeach
-                </ul>
+                @if ($datos['actividades']->isEmpty())
+                        <p class="my-4">No tienes actividades que entregar para esta semana.</p>
+                @else
+                    <ul>
+                        @foreach ($datos['actividades'] as $actividad)
+                                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4 mt-4">
+                                    <a class="" href="/actividad/{{$actividad->id}}">
+                                        <li style="display: flex; gap: 24px; margin-top: 4px">
+                                            {{$actividad->modalidad}},{{$actividad->puntuacionMaxima}}% - {{ $actividad->asignatura->nombre}}
+                                            <div>
+                                                @if ($actividad->estado != 'Pendiente')
+                                                    <p style="color: #666666">Finalizada</p>
+                                                @else
+                                                    <p style="color: #ff0000">Para entregar en {{$actividad->entrega()}}</p>
+                                                @endif
+                                            </div>
+                                        </li>                                            
+                                    </a>
+                                </div>
+                            @endforeach
+                    </ul>
+                @endif
             @endif
-            @endif
+
 
             <div class="my-8">
                 <h2 class="text-xl font-bold">Asignaturas en Curso</h2>
@@ -39,19 +46,10 @@
                     @endif
                 @else
                     <ul>
-                        @foreach ($datos['actividades'] as $actividad)
+                        @foreach ($datos['asignaturas'] as $asignatura)
                             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4 mt-4">
-                                <a class="" href="/actividad/{{$actividad->id}}">
-                                    <li style="display: flex; gap: 24px; margin-top: 4px">
-                                        {{$actividad->modalidad}},{{$actividad->puntuacionMaxima}}% - {{ $actividad->asignatura->nombre}}
-                                        <div>
-                                            @if ($actividad->estado != 'Pendiente')
-                                                <p style="color: #666666">Finalizada</p>
-                                            @else
-                                                <p style="color: #ff0000">Para entregar en {{$actividad->entrega()}}</p>
-                                            @endif
-                                        </div>
-                                    </li>                                            
+                                <a class="" href="asignatura/{{$asignatura->id}}">
+                                    <li style="display: flex; gap: 24px; margin-top: 4px">{{ $asignatura->nombre }}</li>
                                 </a>
                             </div>
                         @endforeach
