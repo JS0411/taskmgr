@@ -31,6 +31,12 @@ class Actividad extends Model
 
     public function entrega()
     {
-        return Carbon::parse($this->fecha_entrega)->diffForHumans(Carbon::Now());
+        $fecha = Carbon::parse($this->fecha_entrega);
+        if ((Carbon::Now()->diff($fecha, false)->format("%r%a") > 0)){
+            $diff = Carbon::parse($this->fecha_entrega)->diffForHumans(Carbon::Now());
+            return "Para entregar en {$diff}";
+        } else {
+            return "Pendiente por evaluar";
+        }
     }
 }

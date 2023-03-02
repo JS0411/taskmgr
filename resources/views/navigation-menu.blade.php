@@ -16,11 +16,13 @@
                         {{ __('Resumen') }}
                     </x-nav-link>
                 </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link href="{{ route('user.show', ['id' => Auth::user()->id]) }}" :active="request()->routeIs('user.show')">
-                        {{ __('Carrera') }}
-                    </x-nav-link>
-                </div>
+                @if (Auth::user()->tipo == 'estudiante')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-nav-link href="{{ route('user.show', ['id' => Auth::user()->id]) }}" :active="request()->routeIs('user.show')">
+                            {{ __('Carrera') }}
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">

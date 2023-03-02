@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('materias_cursadas');
             $table->integer('materias_aprobadas');
             $table->integer('materias_reprobadas');
-            $table->float('promedio', 3, 2);
+            $table->float('promedio', 5, 2);
             $table->timestamps();
         });
     }

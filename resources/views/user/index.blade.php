@@ -21,9 +21,9 @@
                                             {{$actividad->modalidad}},{{$actividad->puntuacionMaxima}}% - {{ $actividad->asignatura->nombre}}
                                             <div>
                                                 @if ($actividad->estado != 'Pendiente')
-                                                    <p style="color: #666666">Finalizada</p>
+                                                    <p style="color: #666666">Finalizada, haga click para ver su puntuacion</p>
                                                 @else
-                                                    <p style="color: #ff0000">Para entregar en {{$actividad->entrega()}}</p>
+                                                    <p style="color: #ff0000">{{$actividad->entrega()}}</p>
                                                 @endif
                                             </div>
                                         </li>                                            

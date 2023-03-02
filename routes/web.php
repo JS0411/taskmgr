@@ -30,6 +30,7 @@ Route::get('/actividad/create', [ActividadController::class, 'create'])->name('a
 Route::post('/actividad', [ActividadController::class, 'store'])->name('actividad.store');
 Route::get('/actividad/{id}', [ActividadController::class, 'show'])->name('actividad.show');
 Route::get('/actividad/{id}/edit', [ActividadController::class, 'edit'])->name('actividad.edit');
+Route::put('/actividad/{id}', [ActividadController::class, 'update'])->name('actividad.update');
 
 
 Route::middleware([

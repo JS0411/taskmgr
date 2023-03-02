@@ -83,4 +83,62 @@ class ActividadController extends Controller
         return view('actividad.show', compact('datos'));
 
     }
+
+    public function edit(Request $request, $id)
+    {
+        $actividad = Actividad::find($id);
+        $user = Auth::user();
+
+        if ($user->tipo == 'docente') {        
+            $datos = [
+                'id' => $actividad->id,
+                'fecha_entrega' => $actividad->entrega(),
+                'descripcion' => $actividad->descripcion,
+                'estado' => $actividad->estado,
+                'modalidad' => $actividad->modalidad,
+                'puntuacionMaxima' => $actividad->puntuacionMaxima,
+                'puntuacion' => 0,
+                'estudiantes' => $actividad->estudiantes,
+            ];
+            return view('actividad.edit', compact('datos'));
+        } else {
+            abort(503);
+        }
+    }
+
+    public function update(Request $request, $id){
+        $actividad = Actividad::find($id);
+        $user = Auth::user();
+        $estudiante_puntuacion = 0;
+
+        if ($user->tipo == 'docente') {                    
+            foreach ($request->puntuaciones as $estudiante_id => $puntuacion) {
+                // Accessing key and value
+                $actividad->estudiantes()->updateExistingPivot($estudiante_id, ['puntuacion' => $puntuacion]);
+            };
+            $actividad->update(['estado' => 'Finalizado']);
+        } else {
+            $estudiante = Estudiante::where('user_id', $user->id)->first();
+            $actividad->estudiantes()->updateExistingPivot($estudiante->id, ['entregado' => 1]);
+            
+            if (!$actividad->estudiantes->isEmpty()){
+                $estudiante_puntuacion = $actividad->estudiantes()->wherePivot('estudiante_id', $estudiante->id)->first()->pivot->puntuacion;
+            }
+        }
+    
+        $actividad->save();
+
+        $datos = [
+            'id' => $actividad->id,
+            'fecha_entrega' => $actividad->entrega(),
+            'descripcion' => $actividad->descripcion,
+            'estado' => $actividad->estado,
+            'modalidad' => $actividad->modalidad,
+            'puntuacionMaxima' => $actividad->puntuacionMaxima,
+            'puntuacion' => $estudiante_puntuacion,
+            'estudiantes' => $actividad->estudiantes,
+        ];
+
+        return view('actividad.show', compact('datos'));
+    }
 }

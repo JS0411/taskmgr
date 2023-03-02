@@ -55,7 +55,6 @@ return [
     */
 
     'url' => env('APP_URL', 'https://shark-app-2momt.ondigitalocean.app'),
-
     'asset_url' => env('ASSET_URL'),
 
     /*

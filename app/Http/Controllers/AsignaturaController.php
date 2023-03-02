@@ -10,9 +10,22 @@ use App\Models\Carrera;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+function attachActividadesToEstudiantes($estudiantes, $actividades) {
+    foreach ($estudiantes as $estudiante) {
+        $objEstudiante = Estudiante::findOrFail($estudiante);
+        foreach ($actividades as $actividad) {
+            $objEstudiante->actividades()->attach($actividad->id);
+        }
+        $objEstudiante->save();
+    }
+}
 
 class AsignaturaController extends Controller
 {
+    
+    
     public function create() {
         if (Auth::user()->tipo == 'docente') {
             return view('asignatura.create');
@@ -113,7 +126,36 @@ class AsignaturaController extends Controller
         if ($user->tipo == 'docente') {            
             if ($modo == "Invitar") {
                 $asignatura->estudiantes()->syncWithoutDetaching($request->estudiantes_invitados);
-            } 
+                $actividades = $asignatura->actividades;
+                attachActividadesToEstudiantes($request->estudiantes_invitados, $actividades);
+            } else if($modo == "Cerrar") {
+                $asignatura->update(['estado' => 'Finalizado']);
+                if (!$asignatura->estudiantes->isEmpty() && !$asignatura->actividades->isEmpty() ){
+                    $estudiantes = $asignatura->estudiantes;
+                    $actividades = $asignatura->actividades->pluck('id');
+                    foreach ($estudiantes as $estudiante) {
+                        $idEstudiante = $estudiante->id;
+                        $nota = 0;
+                        $puntuaciones = DB::table('actividad_estudiante')
+                        ->join('actividads', 'actividad_estudiante.actividad_id', '=', 'actividads.id')
+                        ->where('actividad_estudiante.estudiante_id', $estudiante->id)
+                        ->whereIn('actividads.id', $actividades)
+                        ->pluck('puntuacion', 'actividad_id');
+                        $nota = $puntuaciones->sum()/$puntuaciones->count();
+                        $estudiante->asignaturas()->updateExistingPivot($id, [
+                            'puntuacion' => $nota,
+                            'resultado' => ($nota < 6) ? 0 : 1, 
+                        ]);
+                        $estudiante->calcularPromedio($nota);
+                        $estudiante->cierreAsignatura($nota);
+                        $estudiante->save();
+                        $asignatura->save();
+                    }
+                    $asignatura->save();
+                }
+            } else {
+                abort(503);
+            }
             $datos = [
                 'id' => $asignatura->id,
                 'nombre' => $asignatura->nombre,
@@ -130,6 +172,8 @@ class AsignaturaController extends Controller
             abort(503);
         }
     }
+
+    
 
 
 }

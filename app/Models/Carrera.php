@@ -12,7 +12,7 @@ class Carrera extends Model
 
     protected $fillable = [
         'sede',
-        'nombres',
+        'nombre',
     ];
 
     public function estudiantes()

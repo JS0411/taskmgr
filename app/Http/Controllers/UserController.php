@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carrera;
 use App\Models\Docente;
 use App\Models\Estudiante;
 use Illuminate\Http\Request;
@@ -39,8 +40,24 @@ class UserController extends Controller
 
     }
 
-    public function show() 
+    public function show($id) 
     {
-
+        $user = Auth::user();
+        Carrera::find(1);
+        if ($user->tipo == "estudiante" && $user->id == $id){
+            $estudiante = Estudiante::where('user_id', $id)->first();
+            $datos = [
+                'id' => $id,
+                'carrera' => Carrera::find(1)->nombre,
+                'sede' => Carrera::find(1)->sede,
+                'promedio' => $estudiante->promedio,
+                'materias_reprobadas' => $estudiante->asignaturas()->wherePivot('estudiante_id', $estudiante->id)->wherePivot('resultado', 0)->get(),
+                'materias_aprobadas' => $estudiante->asignaturas()->wherePivot('estudiante_id', $estudiante->id)->wherePivot('resultado', 1)->get(),
+                'materias_cursadas' => $estudiante->materiasCursadas,
+            ];
+            return view('user.show', compact('datos'));
+        } else {
+            abort(503);
+        }
     }
 }

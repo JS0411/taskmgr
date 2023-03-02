@@ -3,7 +3,7 @@
         <h2 style="display: flex; justify-content: space-between; align-items: center" class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $datos['nombre'] }}
 
-            @if (Auth::user()->tipo == 'docente')
+            @if (Auth::user()->tipo == 'docente' && $datos['estado'] == 'En Curso')
                 <a href="{{ route('asignatura.edit', ['id' => $datos['id'], 'modo' => 'Cerrar']) }}" class="inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Cerrar Asignatura</a>
             @endif
         </h2>
@@ -31,7 +31,7 @@
                                                 @if ($actividad->estado != 'Pendiente')
                                                     <p style="color: #666666">Finalizada</p>
                                                 @else
-                                                    <p style="color: #ff0000">Para entregar en {{$actividad->entrega()}}</p>
+                                                    <p style="color: #ff0000">{{$actividad->entrega()}}</p>
                                                 @endif
                                             </div>
                                         </li>                                            
