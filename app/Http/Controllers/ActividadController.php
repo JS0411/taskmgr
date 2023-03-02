@@ -43,8 +43,6 @@ class ActividadController extends Controller
             });
         }
 
-        $asignatura->save();
-
         $datos = [
             'fecha_entrega' => $actividad->entrega(),
             'descripcion' => $actividad->descripcion,
@@ -54,6 +52,8 @@ class ActividadController extends Controller
             'puntuacion' => -1,
             'estudiantes' => $actividad->estudiantes,
         ];
+
+        dd($actividad);
 
         return view('actividad.show', compact('datos'));
     }
